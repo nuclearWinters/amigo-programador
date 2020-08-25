@@ -9,15 +9,23 @@ type TextExpandedProps = {
 const TextExpanded = ({ text }: TextExpandedProps) => {
   const [collapsed, setCollapsed] = useState<boolean>(true);
   return (
-    <div style={{ fontSize: 15, position: "relative" }}>
+    <div
+      style={{
+        fontSize: 15,
+        position: "relative",
+        marginBottom: 10,
+        marginRight: 40,
+        whiteSpace: "pre-wrap",
+      }}
+    >
       <ReactTextMoreLess
         collapsed={collapsed}
-        text={text}
+        text={`${text}`}
         lessHeight={72}
         showMoreText="..."
         showMoreElement={
           <>
-            <div style={{ marginBottom: 20 }}>...</div>
+            <div style={{ paddingBottom: 24 }}>...</div>
             <span
               onClick={() => {
                 setCollapsed(!collapsed);
@@ -32,7 +40,7 @@ const TextExpanded = ({ text }: TextExpandedProps) => {
                 height: 20,
                 display: "flex",
                 alignItems: "center",
-                bottom: -4,
+                bottom: 0,
                 left: 0,
               }}
             >
@@ -42,7 +50,7 @@ const TextExpanded = ({ text }: TextExpandedProps) => {
         }
         showLessElement={
           <>
-            <div style={{ marginBottom: 20 }}></div>
+            <div style={{ marginBottom: 24 }}></div>
             <span
               onClick={() => {
                 setCollapsed(!collapsed);
@@ -57,7 +65,7 @@ const TextExpanded = ({ text }: TextExpandedProps) => {
                 height: 20,
                 display: "flex",
                 alignItems: "center",
-                bottom: -4,
+                bottom: 0,
                 left: 0,
               }}
             >

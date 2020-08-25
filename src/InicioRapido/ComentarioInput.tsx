@@ -6,41 +6,53 @@ type ComentarioInputProps = {
   autofocus: boolean;
   onCancel: Function;
   onComment: Function;
+  iconSize: number;
 };
 
 const ComentarioInput = ({
   autofocus,
   onCancel,
   onComment,
+  iconSize,
 }: ComentarioInputProps) => {
   const [props, setProps] = useSpring(() => ({
     left: "50%",
     right: "50%",
     opacity: 0,
   }));
-  let [comment, setComment] = useState<string>("");
-  let [showButtonsComment, setShowButtonsComment] = useState<boolean>(false);
+  const [comment, setComment] = useState<string>("");
+  const [showButtonsComment, setShowButtonsComment] = useState<boolean>(false);
+  const [rows, setRows] = useState<number>(1);
+  const [minRows] = useState<number>(1);
+  const [maxRows] = useState<number>(100);
   return (
-    <div style={{ paddingTop: 14, display: "flex" }}>
+    <div style={{ display: "flex" }}>
       <div
         style={{
           border: "2px black solid",
           borderRadius: "100%",
-          height: 40,
-          width: 40,
+          height: iconSize,
+          width: iconSize,
         }}
       ></div>
       <div
         style={{
           flex: 1,
-          position: "relative",
           margin: "0px 16px",
           display: "flex",
           flexDirection: "column",
         }}
       >
-        <div style={{ flex: 1, display: "flex" }}>
-          <input
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            position: "relative",
+            alignItems: "center",
+          }}
+        >
+          <textarea
+            rows={rows}
             autoFocus={autofocus}
             onFocus={() => {
               setProps({ left: "0%", right: "0%", opacity: 1 });
@@ -50,30 +62,58 @@ const ComentarioInput = ({
               setProps({ left: "50%", right: "50%", opacity: 0 });
             }}
             onChange={(event) => {
+              const textareaLineHeight = 20;
+
+              const previousRows = event.target.rows;
+              event.target.rows = minRows; // reset number of rows in textarea
+
+              const currentRows = ~~(
+                event.target.scrollHeight / textareaLineHeight
+              );
+
+              if (currentRows === previousRows) {
+                event.target.rows = currentRows;
+              }
+
+              if (currentRows >= maxRows) {
+                event.target.rows = maxRows;
+                event.target.scrollTop = event.target.scrollHeight;
+              }
               setComment(event.target.value);
+              setRows(currentRows < maxRows ? currentRows : maxRows);
             }}
             value={comment}
             placeholder="Escribe un comentario..."
             className={styles.inputComment}
             style={{
+              padding: "0px 0px 6px 0px",
               flex: 1,
-              height: 40,
-              borderWidth: 0,
-              width: "100%",
-              borderBottom: "2px rgba(0,0,0,0.05) solid",
-              padding: "0px",
-              margin: "0px",
-              fontSize: 14,
               backgroundColor: "rgba(0,0,0,0.0)",
+              boxSizing: "border-box",
+              border: "none",
+              borderBottom: "2px rgba(0,0,0,0.05) solid",
+              borderRadius: 3,
+              resize: "none",
+              fontSize: "16px",
+              lineHeight: "20px",
+              overflow: "auto",
+              height: "auto",
             }}
-          />
+            onKeyPress={(event) => {
+              if (event.key === "Enter") {
+                onComment(comment);
+                setShowButtonsComment(false);
+                setComment("");
+                setRows(1);
+              }
+            }}
+          ></textarea>
           <animated.div
             style={{
               position: "absolute",
-              top: 40,
-              borderWidth: 1,
-              borderColor: "#5ab0db",
-              borderStyle: "solid",
+              bottom: 0,
+              backgroundColor: "#5ab0db",
+              height: 2,
               ...props,
             }}
           ></animated.div>
@@ -85,7 +125,7 @@ const ComentarioInput = ({
               flexDirection: "row",
               width: "100%",
               justifyContent: "flex-end",
-              margin: "8px 0px",
+              marginTop: 8,
             }}
           >
             <button
@@ -93,6 +133,7 @@ const ComentarioInput = ({
                 setShowButtonsComment(false);
                 setComment("");
                 onCancel();
+                setRows(1);
               }}
               style={{
                 borderRadius: 2,
@@ -108,7 +149,10 @@ const ComentarioInput = ({
             </button>
             <button
               onClick={() => {
-                onComment();
+                onComment(comment);
+                setShowButtonsComment(false);
+                setComment("");
+                setRows(1);
               }}
               style={{
                 borderRadius: 2,

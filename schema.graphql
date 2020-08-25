@@ -1,0 +1,159 @@
+input AddHomeworkInput {
+  file: String!
+  clientMutationId: String
+}
+
+type AddHomeworkPayload {
+  id: String!
+  clientMutationId: String
+}
+
+input AddCommentInput {
+  comment: String!
+  name: String!
+  created: String!
+  clientMutationId: String
+}
+
+type AddCommentPayload {
+  commentEdge: CommentEdge!
+  clientMutationId: String
+}
+
+input AddCommentOnCommentInput {
+  comment: String!
+  name: String!
+  created: String!
+  idParentComment: String!
+  clientMutationId: String
+}
+
+type AddCommentOnCommentPayload {
+  commentOnCommentEdge: CommentOnCommentEdge!
+  clientMutationId: String
+}
+
+type Mutation {
+  SignUp(name: String!, password: String!, email: String!): String!
+  SignIn(email: String!, password: String!): String!
+  UpdateCurrentTopic(index: Int!): Int!
+  addHomework(input: AddHomeworkInput!): AddHomeworkPayload
+  addComment(input: AddCommentInput!): AddCommentPayload
+  addCommentOnComment(
+    input: AddCommentOnCommentInput!
+  ): AddCommentOnCommentPayload
+}
+
+type Query {
+  user(id: String!): User
+  node(id: ID!): Node
+}
+
+type CommentOnComment implements Node {
+  id: ID!
+  likes: Int!
+  comment: String!
+  name: String!
+  created: String!
+  liked: Boolean!
+  idParentComment: String!
+}
+
+type CommentOnCommentConnection {
+  pageInfo: PageInfo!
+  edges: [CommentOnCommentEdge]
+}
+
+type CommentOnCommentEdge {
+  node: CommentOnComment
+  cursor: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Homework implements Node {
+  id: ID!
+}
+
+type HomeworkEdge {
+  node: Homework
+  cursor: String!
+}
+
+type Comment implements Node {
+  id: ID!
+  likes: Int!
+  comment: String!
+  user_id: String!
+  created: String!
+  totalSubcomments: Int!
+}
+
+type CommentConnection {
+  pageInfo: PageInfo!
+  edges: [CommentEdge]
+}
+
+type CommentEdge {
+  node: Comment
+  cursor: String!
+}
+
+type Modules implements Node {
+  title: String!
+  description: String!
+  thumbnail: String!
+  comments(
+    after: String
+    first: Int
+    before: String
+    last: Int
+  ): CommentConnection!
+}
+
+type ModulesConnection {
+  pageInfo: PageInfo!
+  edges: [ModulesEdge]
+}
+
+type ModulesEdge {
+  node: Modules
+  cursor: String!
+}
+
+type Topic implements Node {
+  id: ID!
+  step: Int!
+  name: String!
+  url: String!
+  type: String!
+  modules(
+    after: String
+    first: Int
+    before: String
+    last: Int
+  ): ModulesConnection!
+}
+
+type TopicConnection {
+  pageInfo: PageInfo!
+  edges: [TopicEdge]
+}
+
+type TopicEdge {
+  node: Topic
+  cursor: String!
+}
+
+type User implements Node {
+  id: ID!
+  name: String!
+  topics(after: String, first: Int, before: String, last: Int): TopicConnection!
+  currentTopic: Int!
+  currentModule: Int!
+}
