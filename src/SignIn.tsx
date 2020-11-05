@@ -4,8 +4,11 @@ import { SignInMutation } from "./__generated__/SignInMutation.graphql";
 import jwtDecode from "jwt-decode";
 
 const mutation = graphql`
-  mutation SignInMutation($email: String!, $password: String!) {
-    SignIn(email: $email, password: $password)
+  mutation SignInMutation($input: SignInInput!) {
+    signIn(input: $input) {
+      refreshToken
+      accessToken
+    }
   }
 `;
 
@@ -15,16 +18,18 @@ function commit(
   retry: (token: string) => void,
   email: string
 ) {
-  console.log(email, password);
   return commitMutation<SignInMutation>(environment, {
     mutation,
     variables: {
-      email,
-      password,
+      input: {
+        password,
+        email,
+      },
     },
     onCompleted: (response) => {
-      localStorage.setItem("token", response.SignIn);
-      retry(jwtDecode<{ id: string }>(response.SignIn).id);
+      localStorage.setItem("refreshToken", response.signIn.refreshToken);
+      localStorage.setItem("accessToken", response.signIn.accessToken);
+      retry(jwtDecode<{ _id: string }>(response.signIn.accessToken)._id);
     },
     onError: (err) => console.error(err),
   });

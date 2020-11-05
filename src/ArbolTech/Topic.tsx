@@ -1,34 +1,35 @@
 import React, { useEffect } from "react";
 import { useSpring, animated } from "react-spring";
 import { useHistory } from "react-router-dom";
-import { createFragmentContainer } from "react-relay";
-import graphql from "babel-plugin-relay/macro";
-import { Topic_topic } from "./__generated__/Topic_topic.graphql";
 import UpdateCurrentTopic from "../UpdateCurrentTopic";
-import enviroment from "../relayConfiguration";
-import UpdateLocalCurrentTopic from "../UpdateLocalCurrentTopic";
 import environment from "../relayConfiguration";
+import UpdateLocalCurrentTopic from "../UpdateLocalCurrentTopic";
+import { getRefreshToken } from "../utils";
 
 interface IProps {
-  index: number;
+  mode: "start" | "end" | "middle";
+  image: any;
+  name: string;
   saved: number;
   current: number;
   total: number;
   backgroundColor: string;
   previousCompleted: boolean;
   savedPreviousCompleted: boolean;
-  topic: Topic_topic;
+  id: string;
 }
 
-const Topic: React.FC<IProps> = ({
-  index,
+export const Topic: React.FC<IProps> = ({
+  mode,
+  name,
+  image,
   saved,
   current,
   total,
   backgroundColor,
   previousCompleted,
   savedPreviousCompleted,
-  topic: { id, name, step, url },
+  id,
 }) => {
   const history = useHistory();
   const start = 283 - Math.round((saved / total) * 283);
@@ -45,22 +46,22 @@ const Topic: React.FC<IProps> = ({
     const end = 283 - Math.round((current / total) * 283);
     if (saved === current) return;
     set({ x: end });
-    localStorage.setItem(`topic${id}`, String(current));
-    if (step === 1) return;
+    localStorage.setItem(`topic${name}`, String(current));
+    if (mode === "start") return;
     if (!previousCompleted)
-      return localStorage.removeItem(`savedPreviousCompleted${id}`);
+      return localStorage.removeItem(`savedPreviousCompleted${name}`);
     setLine({ x: 0 });
-    localStorage.setItem(`savedPreviousCompleted${id}`, "true");
+    localStorage.setItem(`savedPreviousCompleted${name}`, "true");
   }, [
     setLine,
     set,
-    step,
+    mode,
     previousCompleted,
     savedPreviousCompleted,
     current,
     total,
-    id,
     saved,
+    name,
   ]);
   return (
     <div
@@ -76,8 +77,8 @@ const Topic: React.FC<IProps> = ({
       <div
         onClick={() => {
           history.push("/moduloencurso");
-          UpdateCurrentTopic.commit(enviroment, index);
-          UpdateLocalCurrentTopic.commitLocal(environment, index);
+          UpdateCurrentTopic.commit(environment, name, getRefreshToken());
+          UpdateLocalCurrentTopic.commitLocal(environment, name, id);
         }}
         style={{
           position: "relative",
@@ -112,7 +113,7 @@ const Topic: React.FC<IProps> = ({
           />
           <circle r="45" cx="50%" cy="50" fill="transparent" />
           <image
-            href={url}
+            href={image}
             height="50"
             width="50"
             x="50"
@@ -120,7 +121,7 @@ const Topic: React.FC<IProps> = ({
             transform="translate(-25,-25)"
           />
         </animated.svg>
-        {step !== 1 && (
+        {mode !== "start" && (
           <animated.svg
             height="54"
             width="10"
@@ -159,15 +160,3 @@ const Topic: React.FC<IProps> = ({
     </div>
   );
 };
-
-export default createFragmentContainer(Topic, {
-  topic: graphql`
-    fragment Topic_topic on Topic {
-      id
-      step
-      name
-      url
-      type
-    }
-  `,
-});

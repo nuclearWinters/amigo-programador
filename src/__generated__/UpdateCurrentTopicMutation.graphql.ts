@@ -2,11 +2,18 @@
 /* eslint-disable */
 
 import { ConcreteRequest } from "relay-runtime";
+export type UpdateCurrentTopicInput = {
+    refreshToken: string;
+    topic: string;
+    clientMutationId?: string | null;
+};
 export type UpdateCurrentTopicMutationVariables = {
-    index: number;
+    input: UpdateCurrentTopicInput;
 };
 export type UpdateCurrentTopicMutationResponse = {
-    readonly UpdateCurrentTopic: number;
+    readonly updateCurrentTopic: {
+        readonly topic: string;
+    };
 };
 export type UpdateCurrentTopicMutation = {
     readonly response: UpdateCurrentTopicMutationResponse;
@@ -17,9 +24,11 @@ export type UpdateCurrentTopicMutation = {
 
 /*
 mutation UpdateCurrentTopicMutation(
-  $index: Int!
+  $input: UpdateCurrentTopicInput!
 ) {
-  UpdateCurrentTopic(index: $index)
+  updateCurrentTopic(input: $input) {
+    topic
+  }
 }
 */
 
@@ -28,8 +37,8 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "index",
-    "type": "Int!"
+    "name": "input",
+    "type": "UpdateCurrentTopicInput!"
   }
 ],
 v1 = [
@@ -38,12 +47,23 @@ v1 = [
     "args": [
       {
         "kind": "Variable",
-        "name": "index",
-        "variableName": "index"
+        "name": "input",
+        "variableName": "input"
       }
     ],
-    "kind": "ScalarField",
-    "name": "UpdateCurrentTopic",
+    "concreteType": "UpdateCurrentTopicPayload",
+    "kind": "LinkedField",
+    "name": "updateCurrentTopic",
+    "plural": false,
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "topic",
+        "storageKey": null
+      }
+    ],
     "storageKey": null
   }
 ];
@@ -68,9 +88,9 @@ return {
     "metadata": {},
     "name": "UpdateCurrentTopicMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdateCurrentTopicMutation(\n  $index: Int!\n) {\n  UpdateCurrentTopic(index: $index)\n}\n"
+    "text": "mutation UpdateCurrentTopicMutation(\n  $input: UpdateCurrentTopicInput!\n) {\n  updateCurrentTopic(input: $input) {\n    topic\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'bfe130bd648746ce8f47c3594f968e83';
+(node as any).hash = '23aa8a5107fb2787e6d2eb66a1d58d6d';
 export default node;

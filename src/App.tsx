@@ -1,40 +1,50 @@
 import React, { useState } from "react";
-import "./App.css";
 import { QueryRenderer } from "react-relay";
 import graphql from "babel-plugin-relay/macro";
 import environment from "./relayConfiguration";
 import AppBrowser from "./AppBrowser";
 import { AppQuery } from "./__generated__/AppQuery.graphql";
 import jwtDecode from "jwt-decode";
+import { Provider } from "react-redux";
+import { store } from "./Redux";
 
 interface IJWT {
-  id: string;
+  _id: string;
 }
 
 const App: React.FC = () => {
   const getIdFromToken = (): string => {
-    const token = localStorage.getItem("token");
-    if (!token) return "";
-    return jwtDecode<IJWT>(token).id;
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) return "";
+    return jwtDecode<IJWT>(accessToken)._id;
+  };
+  const getRefreshToken = (): string => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) return "";
+    return refreshToken;
   };
   const [id, setId] = useState<string>(getIdFromToken());
+  const [refreshToken] = useState<string>(getRefreshToken());
   return (
     <QueryRenderer<AppQuery>
       environment={environment}
       query={graphql`
-        query AppQuery($id: String!) {
-          user(id: $id) {
+        query AppQuery($id: String!, $refreshToken: String!) {
+          user(id: $id, refreshToken: $refreshToken) {
             ...AppBrowser_user
           }
         }
       `}
       variables={{
         id,
+        refreshToken,
       }}
       render={({ error, props }) => {
         if (props && props.user) {
           return (
-            <AppBrowser user={props.user} retry={(id: string) => setId(id)} />
+            <Provider store={store}>
+              <AppBrowser user={props.user} retry={(id: string) => setId(id)} />
+            </Provider>
           );
         } else if (error) {
           return <div>{error.message}</div>;

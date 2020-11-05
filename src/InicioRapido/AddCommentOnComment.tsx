@@ -1,4 +1,4 @@
-import { commitMutation, Environment } from "react-relay";
+/*import { commitMutation, Environment } from "react-relay";
 import graphql from "babel-plugin-relay/macro";
 import { AddCommentOnCommentMutation } from "./__generated__/AddCommentOnCommentMutation.graphql";
 import { ConnectionHandler } from "relay-runtime";
@@ -99,4 +99,6 @@ function commit(
   });
 }
 
-export default { commit };
+export default { commit };*/
+
+export {};

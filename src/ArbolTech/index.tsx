@@ -1,3 +1,1 @@
-import ArbolTech from "./ArbolTech";
-
-export default ArbolTech;
+export { ArbolTech } from "./ArbolTech";

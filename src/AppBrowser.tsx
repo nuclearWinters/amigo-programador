@@ -1,37 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import Home from "./Home";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import TopBar from "./Home/TopBar";
 import Logo from "./Home/Logo";
 import LinkOption from "./Home/LinkOption";
 import Nosotros from "./Nosotros";
-import ArbolTech from "./ArbolTech";
+import { ArbolTech } from "./ArbolTech";
 import InicioRapido from "./InicioRapido";
 import graphql from "babel-plugin-relay/macro";
 import { createFragmentContainer } from "react-relay";
-import Modal from "./Modal";
 import enviroment from "./relayConfiguration";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
+import {
+  IngresarButton,
+  RegistrarButton,
+  Modal,
+  FormInput,
+  IniciarButton,
+  RegistrarseButton,
+} from "./components";
+import { AppBrowser_user } from "./__generated__/AppBrowser_user.graphql";
 
-const AppBrowser: React.FC<{ user: any; retry: (id: string) => void }> = ({
-  user,
-  retry,
-}) => {
+interface IProps {
+  user: AppBrowser_user;
+  retry: (id: string) => void;
+}
+
+const AppBrowser: React.FC<IProps> = ({ user, retry }) => {
   const [showIngresar, setShowIngresar] = useState(false);
   const [showRegistrarse, setShowRegistrarse] = useState(false);
-  const showIngresarFunc = () => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dismissModal = () => {
     setShowIngresar(false);
-  };
-  const showRegistrarseFunc = () => {
     setShowRegistrarse(false);
+    setEmail("");
+    setPassword("");
+    setUsername("");
   };
-  const submitRegistrar = (name: string, password: string, email: string) => {
-    SignUp.commit(enviroment, name, password, retry, email);
+  const handleInputsByName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    switch (event.target.name) {
+      case "Email":
+        return setEmail(event.target.value);
+
+      case "Username":
+        return setUsername(event.target.value);
+      default:
+        return setPassword(event.target.value);
+    }
   };
-  const submitIngresar = (name: string, password: string, email: string) => {
+  const submitRegistrar = () => {
+    SignUp.commit(enviroment, username, password, retry, email);
+  };
+  const submitIngresar = () => {
     SignIn.commit(enviroment, password, retry, email);
   };
+  const onClickIngresar = useCallback(() => {
+    setShowIngresar(true);
+  }, []);
+  const onClickRegistrarse = useCallback(() => {
+    setShowRegistrarse(true);
+  }, []);
   return (
     <BrowserRouter>
       <TopBar>
@@ -41,62 +72,18 @@ const AppBrowser: React.FC<{ user: any; retry: (id: string) => void }> = ({
         <LinkOption title="Módulo en curso" link="/moduloencurso" />
         <Logo />
         <div>
-          {!user.name ? (
+          {!user.username ? (
             <div style={{ flexDirection: "row", display: "flex" }}>
-              <div
-                style={{
-                  cursor: "pointer",
-                  color: "rgb(255,255,255)",
-                  fontSize: 18,
-                  paddingLeft: 22,
-                  paddingRight: 22,
-                  paddingTop: 6,
-                  paddingBottom: 6,
-                  textAlign: "center",
-                  textDecoration: "none",
-                  backgroundColor: "#1bbc9b",
-                  borderRadius: 30,
-                  boxShadow: "1px 2px 5px #888888",
-                  fontWeight: "bold",
-                  letterSpacing: 1,
-                }}
-                onClick={() => {
-                  setShowIngresar(true);
-                }}
-              >
-                Ingresar
-              </div>
-              <div
-                onClick={() => {
-                  setShowRegistrarse(true);
-                }}
-                style={{
-                  marginLeft: 20,
-                  cursor: "pointer",
-                  color: "rgb(255,255,255)",
-                  fontSize: 18,
-                  paddingLeft: 22,
-                  paddingRight: 22,
-                  paddingTop: 6,
-                  paddingBottom: 6,
-                  textAlign: "center",
-                  textDecoration: "none",
-                  backgroundColor: "#2c92db",
-                  borderRadius: 30,
-                  boxShadow: "1px 2px 5px #888888",
-                  fontWeight: "bold",
-                  letterSpacing: 1,
-                }}
-              >
-                Registrarse
-              </div>
+              <IngresarButton onClick={onClickIngresar} />
+              <RegistrarButton onClick={onClickRegistrarse} />
             </div>
           ) : (
             <>
-              <div>{user.name}</div>
+              <div>{user.username}</div>
               <div
                 onClick={() => {
-                  localStorage.removeItem("token");
+                  localStorage.removeItem("refreshToken");
+                  localStorage.removeItem("accessToken");
                   retry("");
                 }}
               >
@@ -106,22 +93,61 @@ const AppBrowser: React.FC<{ user: any; retry: (id: string) => void }> = ({
           )}
         </div>
         {showIngresar && (
-          <Modal
-            title={"INGRESAR"}
-            buttonTitle={"Iniciar sesión"}
-            mainColor={"#1bbc9b"}
-            toggle={showIngresarFunc}
-            onSubmit={submitIngresar}
-          />
+          <Modal toggle={dismissModal}>
+            <div
+              style={{
+                fontSize: 24,
+                color: "#1bbc9b",
+                fontWeight: "bold",
+                letterSpacing: 1,
+                marginTop: 24,
+              }}
+            >
+              INGRESAR
+            </div>
+            <FormInput
+              placeholder="Email"
+              onChange={handleInputsByName}
+              value={email}
+            />
+            <FormInput
+              placeholder="Password"
+              onChange={handleInputsByName}
+              value={password}
+            />
+            <IniciarButton onClick={submitIngresar} />
+          </Modal>
         )}
         {showRegistrarse && (
-          <Modal
-            title={"REGISTRARSE"}
-            buttonTitle={"Registrarse"}
-            mainColor={"#2c92db"}
-            toggle={showRegistrarseFunc}
-            onSubmit={submitRegistrar}
-          />
+          <Modal toggle={dismissModal}>
+            <div
+              style={{
+                fontSize: 24,
+                color: "#2c92db",
+                fontWeight: "bold",
+                letterSpacing: 1,
+                marginTop: 24,
+              }}
+            >
+              REGISTRARSE
+            </div>
+            <FormInput
+              placeholder="Username"
+              onChange={handleInputsByName}
+              value={username}
+            />
+            <FormInput
+              placeholder="Email"
+              onChange={handleInputsByName}
+              value={email}
+            />
+            <FormInput
+              placeholder="Password"
+              onChange={handleInputsByName}
+              value={password}
+            />
+            <RegistrarseButton onClick={submitRegistrar} />
+          </Modal>
         )}
       </TopBar>
       <Switch>
@@ -130,15 +156,15 @@ const AppBrowser: React.FC<{ user: any; retry: (id: string) => void }> = ({
         <Route
           path="/arboltech"
           exact
-          render={(props) => <ArbolTech {...props} topics={user.topics} />}
+          render={(props) => <ArbolTech {...props} id={user.id} />}
         />
-        {
-          <Route
-            path="/moduloencurso"
-            exact
-            render={(props) => <InicioRapido {...props} user={user} />}
-          />
-        }
+        <Route
+          path="/moduloencurso"
+          exact
+          render={(props) => (
+            <InicioRapido {...props} user={user} id={user.id} />
+          )}
+        />
         <Route path="/" render={() => <div>404</div>} />
       </Switch>
     </BrowserRouter>
@@ -149,10 +175,7 @@ export default createFragmentContainer(AppBrowser, {
   user: graphql`
     fragment AppBrowser_user on User {
       id
-      name
-      topics {
-        ...ArbolTech_topics
-      }
+      username
       ...InicioRapido_user
     }
   `,

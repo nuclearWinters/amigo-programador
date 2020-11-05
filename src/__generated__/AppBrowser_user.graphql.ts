@@ -5,10 +5,7 @@ import { ReaderFragment } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
 export type AppBrowser_user = {
     readonly id: string;
-    readonly name: string;
-    readonly topics: {
-        readonly " $fragmentRefs": FragmentRefs<"ArbolTech_topics">;
-    };
+    readonly username: string;
     readonly " $fragmentRefs": FragmentRefs<"InicioRapido_user">;
     readonly " $refType": "AppBrowser_user";
 };
@@ -37,23 +34,7 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "name",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": "TopicConnection",
-      "kind": "LinkedField",
-      "name": "topics",
-      "plural": false,
-      "selections": [
-        {
-          "args": null,
-          "kind": "FragmentSpread",
-          "name": "ArbolTech_topics"
-        }
-      ],
+      "name": "username",
       "storageKey": null
     },
     {
@@ -64,5 +45,5 @@ const node: ReaderFragment = {
   ],
   "type": "User"
 };
-(node as any).hash = '7db81f3aa2ac419f4b9fcebd92de1e1e';
+(node as any).hash = 'ffc3b779ef39887907cc399f4da19c33';
 export default node;

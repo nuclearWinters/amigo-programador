@@ -5,6 +5,7 @@ import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
 export type AppQueryVariables = {
     id: string;
+    refreshToken: string;
 };
 export type AppQueryResponse = {
     readonly user: {
@@ -21,8 +22,9 @@ export type AppQuery = {
 /*
 query AppQuery(
   $id: String!
+  $refreshToken: String!
 ) {
-  user(id: $id) {
+  user(id: $id, refreshToken: $refreshToken) {
     ...AppBrowser_user
     id
   }
@@ -30,54 +32,22 @@ query AppQuery(
 
 fragment AppBrowser_user on User {
   id
-  name
-  topics {
-    ...ArbolTech_topics
-  }
+  username
   ...InicioRapido_user
 }
 
-fragment ArbolTech_topics on TopicConnection {
-  edges {
-    node {
-      id
-      type
-      ...Topic_topic
-    }
-  }
-}
-
 fragment InicioRapido_user on User {
-  currentTopic
-  currentModule
-  topics {
-    edges {
-      node {
-        id
-        step
-        name
-        url
-        type
-        modules {
-          edges {
-            node {
-              title
-              description
-              thumbnail
-            }
-          }
-        }
-      }
-    }
+  currentModules {
+    QuickStart
+    HTML
+    CSS
+    Javascript
+    React
+    Node
+    Express
+    MongoDB
   }
-}
-
-fragment Topic_topic on Topic {
-  id
-  step
-  name
-  url
-  type
+  currentTopic
 }
 */
 
@@ -88,6 +58,12 @@ var v0 = [
     "kind": "LocalArgument",
     "name": "id",
     "type": "String!"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "refreshToken",
+    "type": "String!"
   }
 ],
 v1 = [
@@ -95,22 +71,13 @@ v1 = [
     "kind": "Variable",
     "name": "id",
     "variableName": "id"
+  },
+  {
+    "kind": "Variable",
+    "name": "refreshToken",
+    "variableName": "refreshToken"
   }
-],
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "name",
-  "storageKey": null
-};
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
@@ -151,113 +118,82 @@ return {
         "name": "user",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v3/*: any*/),
           {
             "alias": null,
             "args": null,
-            "concreteType": "TopicConnection",
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "username",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "CurrentModules",
             "kind": "LinkedField",
-            "name": "topics",
+            "name": "currentModules",
             "plural": false,
             "selections": [
               {
                 "alias": null,
                 "args": null,
-                "concreteType": "TopicEdge",
-                "kind": "LinkedField",
-                "name": "edges",
-                "plural": true,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Topic",
-                    "kind": "LinkedField",
-                    "name": "node",
-                    "plural": false,
-                    "selections": [
-                      (v2/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "type",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "step",
-                        "storageKey": null
-                      },
-                      (v3/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "url",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "ModulesConnection",
-                        "kind": "LinkedField",
-                        "name": "modules",
-                        "plural": false,
-                        "selections": [
-                          {
-                            "alias": null,
-                            "args": null,
-                            "concreteType": "ModulesEdge",
-                            "kind": "LinkedField",
-                            "name": "edges",
-                            "plural": true,
-                            "selections": [
-                              {
-                                "alias": null,
-                                "args": null,
-                                "concreteType": "Modules",
-                                "kind": "LinkedField",
-                                "name": "node",
-                                "plural": false,
-                                "selections": [
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "kind": "ScalarField",
-                                    "name": "title",
-                                    "storageKey": null
-                                  },
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "kind": "ScalarField",
-                                    "name": "description",
-                                    "storageKey": null
-                                  },
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "kind": "ScalarField",
-                                    "name": "thumbnail",
-                                    "storageKey": null
-                                  }
-                                ],
-                                "storageKey": null
-                              }
-                            ],
-                            "storageKey": null
-                          }
-                        ],
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  }
-                ],
+                "kind": "ScalarField",
+                "name": "QuickStart",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "HTML",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "CSS",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "Javascript",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "React",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "Node",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "Express",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "MongoDB",
                 "storageKey": null
               }
             ],
@@ -268,13 +204,6 @@ return {
             "args": null,
             "kind": "ScalarField",
             "name": "currentTopic",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "currentModule",
             "storageKey": null
           }
         ],
@@ -287,9 +216,9 @@ return {
     "metadata": {},
     "name": "AppQuery",
     "operationKind": "query",
-    "text": "query AppQuery(\n  $id: String!\n) {\n  user(id: $id) {\n    ...AppBrowser_user\n    id\n  }\n}\n\nfragment AppBrowser_user on User {\n  id\n  name\n  topics {\n    ...ArbolTech_topics\n  }\n  ...InicioRapido_user\n}\n\nfragment ArbolTech_topics on TopicConnection {\n  edges {\n    node {\n      id\n      type\n      ...Topic_topic\n    }\n  }\n}\n\nfragment InicioRapido_user on User {\n  currentTopic\n  currentModule\n  topics {\n    edges {\n      node {\n        id\n        step\n        name\n        url\n        type\n        modules {\n          edges {\n            node {\n              title\n              description\n              thumbnail\n            }\n          }\n        }\n      }\n    }\n  }\n}\n\nfragment Topic_topic on Topic {\n  id\n  step\n  name\n  url\n  type\n}\n"
+    "text": "query AppQuery(\n  $id: String!\n  $refreshToken: String!\n) {\n  user(id: $id, refreshToken: $refreshToken) {\n    ...AppBrowser_user\n    id\n  }\n}\n\nfragment AppBrowser_user on User {\n  id\n  username\n  ...InicioRapido_user\n}\n\nfragment InicioRapido_user on User {\n  currentModules {\n    QuickStart\n    HTML\n    CSS\n    Javascript\n    React\n    Node\n    Express\n    MongoDB\n  }\n  currentTopic\n}\n"
   }
 };
 })();
-(node as any).hash = '4047a14cb1f5c187a699551a73d13e6b';
+(node as any).hash = 'aeb7c5ef6c08fb87c623c4a0e37313bc';
 export default node;

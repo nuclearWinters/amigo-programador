@@ -1,8 +1,8 @@
 import { Environment, Network, RecordSource, Store } from "relay-runtime";
 
 const fetchQuery = async (operation: any, variables: any) => {
-  const getToken = (): string => {
-    const token = localStorage.getItem("token");
+  const getAccessToken = (): string => {
+    const token = localStorage.getItem("accessToken");
     if (!token) return "";
     return token;
   };
@@ -10,15 +10,13 @@ const fetchQuery = async (operation: any, variables: any) => {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      Authorization: getToken(),
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       query: operation.text,
       variables,
     }),
-  }).then((response) => {
-    return response.json();
-  });
+  }).then((response) => response.json());
 };
 
 const environment = new Environment({

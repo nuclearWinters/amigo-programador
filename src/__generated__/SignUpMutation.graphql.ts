@@ -2,13 +2,20 @@
 /* eslint-disable */
 
 import { ConcreteRequest } from "relay-runtime";
-export type SignUpMutationVariables = {
-    name: string;
-    password: string;
+export type SignUpInput = {
+    username: string;
     email: string;
+    password: string;
+    clientMutationId?: string | null;
+};
+export type SignUpMutationVariables = {
+    input: SignUpInput;
 };
 export type SignUpMutationResponse = {
-    readonly SignUp: string;
+    readonly signUp: {
+        readonly refreshToken: string;
+        readonly accessToken: string;
+    };
 };
 export type SignUpMutation = {
     readonly response: SignUpMutationResponse;
@@ -19,11 +26,12 @@ export type SignUpMutation = {
 
 /*
 mutation SignUpMutation(
-  $name: String!
-  $password: String!
-  $email: String!
+  $input: SignUpInput!
 ) {
-  SignUp(name: $name, password: $password, email: $email)
+  signUp(input: $input) {
+    refreshToken
+    accessToken
+  }
 }
 */
 
@@ -32,20 +40,8 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "name",
-    "type": "String!"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "password",
-    "type": "String!"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "email",
-    "type": "String!"
+    "name": "input",
+    "type": "SignUpInput!"
   }
 ],
 v1 = [
@@ -54,22 +50,30 @@ v1 = [
     "args": [
       {
         "kind": "Variable",
-        "name": "email",
-        "variableName": "email"
-      },
-      {
-        "kind": "Variable",
-        "name": "name",
-        "variableName": "name"
-      },
-      {
-        "kind": "Variable",
-        "name": "password",
-        "variableName": "password"
+        "name": "input",
+        "variableName": "input"
       }
     ],
-    "kind": "ScalarField",
-    "name": "SignUp",
+    "concreteType": "SignUpPayload",
+    "kind": "LinkedField",
+    "name": "signUp",
+    "plural": false,
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "refreshToken",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "accessToken",
+        "storageKey": null
+      }
+    ],
     "storageKey": null
   }
 ];
@@ -94,9 +98,9 @@ return {
     "metadata": {},
     "name": "SignUpMutation",
     "operationKind": "mutation",
-    "text": "mutation SignUpMutation(\n  $name: String!\n  $password: String!\n  $email: String!\n) {\n  SignUp(name: $name, password: $password, email: $email)\n}\n"
+    "text": "mutation SignUpMutation(\n  $input: SignUpInput!\n) {\n  signUp(input: $input) {\n    refreshToken\n    accessToken\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '9366bd6d8027f69441a375bddda17732';
+(node as any).hash = '940d6f702160ddd3329a9d1228d5202c';
 export default node;

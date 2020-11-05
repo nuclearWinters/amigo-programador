@@ -1,0 +1,11 @@
+export { AText } from "./AText";
+export { IngresarButton } from "./Button/IngresarButton";
+export { RegistrarButton } from "./Button/RegistrarButton";
+export { RegistrarseButton } from "./Button/RegistrarseButton";
+export { EnviarButton } from "./Button/EnviarButton";
+export { IniciarButton } from "./Button/IniciarButton";
+export { FormInput } from "./Input/FormInput";
+export { Modal } from "./Modal";
+export { LupaIcono } from "./Icons/LupaIcono";
+export { TijerasIcono } from "./Icons/TijerasIcono";
+export { UploadIcono } from "./Icons/UploadIcono";

@@ -1,52 +1,74 @@
-input AddHomeworkInput {
-  file: String!
+type UpdateCurrentModulePayload {
+  error: String
+  module: Int!
+  accessToken: String
   clientMutationId: String
 }
 
-type AddHomeworkPayload {
-  id: String!
-  clientMutationId: String
-}
-
-input AddCommentInput {
-  comment: String!
+input UpdateCurrentModuleInput {
   name: String!
-  created: String!
+  refreshToken: String!
+  moduleIndex: Int!
   clientMutationId: String
 }
 
-type AddCommentPayload {
-  commentEdge: CommentEdge!
+type UpdateCurrentTopicPayload {
+  error: String
+  topic: String!
+  accessToken: String
   clientMutationId: String
 }
 
-input AddCommentOnCommentInput {
-  comment: String!
-  name: String!
-  created: String!
-  idParentComment: String!
+input UpdateCurrentTopicInput {
+  refreshToken: String!
+  topic: String!
   clientMutationId: String
 }
 
-type AddCommentOnCommentPayload {
-  commentOnCommentEdge: CommentOnCommentEdge!
+type SignUpPayload {
+  refreshToken: String!
+  accessToken: String!
   clientMutationId: String
+}
+
+input SignUpInput {
+  username: String!
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+type SignInPayload {
+  refreshToken: String!
+  accessToken: String!
+  clientMutationId: String
+}
+
+input SignInInput {
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+type UpdateCurrentTopicAndModulePayload {
+  topic: Int!
+  modules: CurrentModules!
 }
 
 type Mutation {
-  SignUp(name: String!, password: String!, email: String!): String!
-  SignIn(email: String!, password: String!): String!
-  UpdateCurrentTopic(index: Int!): Int!
-  addHomework(input: AddHomeworkInput!): AddHomeworkPayload
-  addComment(input: AddCommentInput!): AddCommentPayload
-  addCommentOnComment(
-    input: AddCommentOnCommentInput!
-  ): AddCommentOnCommentPayload
+  signUp(input: SignUpInput!): SignUpPayload!
+  signIn(input: SignInInput!): SignInPayload!
+  updateCurrentTopic(
+    input: UpdateCurrentTopicInput!
+  ): UpdateCurrentTopicPayload!
+  updateCurrentModule(
+    input: UpdateCurrentModuleInput!
+  ): UpdateCurrentModulePayload!
 }
 
 type Query {
-  user(id: String!): User
-  node(id: ID!): Node
+  user(id: String!, refreshToken: String!): User
+  node(id: ID!, refreshToken: String!): Node
 }
 
 type CommentOnComment implements Node {
@@ -85,75 +107,20 @@ type HomeworkEdge {
   cursor: String!
 }
 
-type Comment implements Node {
-  id: ID!
-  likes: Int!
-  comment: String!
-  user_id: String!
-  created: String!
-  totalSubcomments: Int!
-}
-
-type CommentConnection {
-  pageInfo: PageInfo!
-  edges: [CommentEdge]
-}
-
-type CommentEdge {
-  node: Comment
-  cursor: String!
-}
-
-type Modules implements Node {
-  title: String!
-  description: String!
-  thumbnail: String!
-  comments(
-    after: String
-    first: Int
-    before: String
-    last: Int
-  ): CommentConnection!
-}
-
-type ModulesConnection {
-  pageInfo: PageInfo!
-  edges: [ModulesEdge]
-}
-
-type ModulesEdge {
-  node: Modules
-  cursor: String!
-}
-
-type Topic implements Node {
-  id: ID!
-  step: Int!
-  name: String!
-  url: String!
-  type: String!
-  modules(
-    after: String
-    first: Int
-    before: String
-    last: Int
-  ): ModulesConnection!
-}
-
-type TopicConnection {
-  pageInfo: PageInfo!
-  edges: [TopicEdge]
-}
-
-type TopicEdge {
-  node: Topic
-  cursor: String!
+type CurrentModules {
+  QuickStart: Int!
+  HTML: Int!
+  CSS: Int!
+  Javascript: Int!
+  React: Int!
+  Node: Int!
+  Express: Int!
+  MongoDB: Int!
 }
 
 type User implements Node {
   id: ID!
-  name: String!
-  topics(after: String, first: Int, before: String, last: Int): TopicConnection!
-  currentTopic: Int!
-  currentModule: Int!
+  username: String!
+  currentTopic: String!
+  currentModules: CurrentModules!
 }

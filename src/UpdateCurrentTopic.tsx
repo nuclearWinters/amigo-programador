@@ -3,18 +3,23 @@ import graphql from "babel-plugin-relay/macro";
 import { UpdateCurrentTopicMutation } from "./__generated__/UpdateCurrentTopicMutation.graphql";
 
 const mutation = graphql`
-  mutation UpdateCurrentTopicMutation($index: Int!) {
-    UpdateCurrentTopic(index: $index)
+  mutation UpdateCurrentTopicMutation($input: UpdateCurrentTopicInput!) {
+    updateCurrentTopic(input: $input) {
+      topic
+    }
   }
 `;
 
-function commit(environment: Environment, index: number) {
+function commit(environment: Environment, topic: string, refreshToken: string) {
   const variables = {
-    index,
+    topic,
+    refreshToken,
   };
   commitMutation<UpdateCurrentTopicMutation>(environment, {
     mutation,
-    variables,
+    variables: {
+      input: variables,
+    },
   });
 }
 

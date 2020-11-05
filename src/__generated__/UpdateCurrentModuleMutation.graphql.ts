@@ -2,34 +2,33 @@
 /* eslint-disable */
 
 import { ConcreteRequest } from "relay-runtime";
-export type SignInInput = {
-    email: string;
-    password: string;
+export type UpdateCurrentModuleInput = {
+    name: string;
+    refreshToken: string;
+    moduleIndex: number;
     clientMutationId?: string | null;
 };
-export type SignInMutationVariables = {
-    input: SignInInput;
+export type UpdateCurrentModuleMutationVariables = {
+    input: UpdateCurrentModuleInput;
 };
-export type SignInMutationResponse = {
-    readonly signIn: {
-        readonly refreshToken: string;
-        readonly accessToken: string;
+export type UpdateCurrentModuleMutationResponse = {
+    readonly updateCurrentModule: {
+        readonly module: number;
     };
 };
-export type SignInMutation = {
-    readonly response: SignInMutationResponse;
-    readonly variables: SignInMutationVariables;
+export type UpdateCurrentModuleMutation = {
+    readonly response: UpdateCurrentModuleMutationResponse;
+    readonly variables: UpdateCurrentModuleMutationVariables;
 };
 
 
 
 /*
-mutation SignInMutation(
-  $input: SignInInput!
+mutation UpdateCurrentModuleMutation(
+  $input: UpdateCurrentModuleInput!
 ) {
-  signIn(input: $input) {
-    refreshToken
-    accessToken
+  updateCurrentModule(input: $input) {
+    module
   }
 }
 */
@@ -40,7 +39,7 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "input",
-    "type": "SignInInput!"
+    "type": "UpdateCurrentModuleInput!"
   }
 ],
 v1 = [
@@ -53,23 +52,16 @@ v1 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "SignInPayload",
+    "concreteType": "UpdateCurrentModulePayload",
     "kind": "LinkedField",
-    "name": "signIn",
+    "name": "updateCurrentModule",
     "plural": false,
     "selections": [
       {
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "refreshToken",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "accessToken",
+        "name": "module",
         "storageKey": null
       }
     ],
@@ -81,7 +73,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "SignInMutation",
+    "name": "UpdateCurrentModuleMutation",
     "selections": (v1/*: any*/),
     "type": "Mutation"
   },
@@ -89,17 +81,17 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "SignInMutation",
+    "name": "UpdateCurrentModuleMutation",
     "selections": (v1/*: any*/)
   },
   "params": {
     "id": null,
     "metadata": {},
-    "name": "SignInMutation",
+    "name": "UpdateCurrentModuleMutation",
     "operationKind": "mutation",
-    "text": "mutation SignInMutation(\n  $input: SignInInput!\n) {\n  signIn(input: $input) {\n    refreshToken\n    accessToken\n  }\n}\n"
+    "text": "mutation UpdateCurrentModuleMutation(\n  $input: UpdateCurrentModuleInput!\n) {\n  updateCurrentModule(input: $input) {\n    module\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'fdc06af24dad43d9d806dc35d3e4fd7f';
+(node as any).hash = '2555ede85434318509d2d26a5a4ef38e';
 export default node;
